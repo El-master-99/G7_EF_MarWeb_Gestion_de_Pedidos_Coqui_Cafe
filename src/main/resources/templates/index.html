@@ -25,106 +25,103 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/produccion}">Producción / Tareas</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" th:if="${esAdmin}">
                         <a class="nav-link" th:href="@{/usuario}">Usuarios</a>
                     </li>
                 </ul>
 
-                <div class="d-flex align-items-center text-white" th:if="${session.usuarioLogueado != null}">
+                <div class="d-flex align-items-center text-white" th:if="${usuarioLogueado != null}">
                     <span class="me-3 bg-secondary px-3 py-1 rounded-pill fs-7">
                         <i class="fa-solid fa-circle-user text-warning me-1"></i>
-                        <span th:text="${session.usuarioLogueado.email}">usuario@coquicafe.com</span>
+                        <span th:text="${usuarioLogueado}">usuario</span>
                     </span>
-                    <a th:href="@{/}" class="btn btn-sm btn-outline-dangerfw-bold">
-                        <i class="fa-solid fa-right-from-bracket"></i> Salir
-                    </a>
+
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">
+                            <i class="fa-solid fa-right-from-bracket"></i> Salir
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
     </nav>
-            <div class="py-5 text-center text-white" th:style="'background-image:
+    <div class="py-5 text-center text-white" th:style="'background-image:
         linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.5)),
         url(/Imagenes/coqui-realplaza2.jpg);
         background-size:cover;
         background-position:center;'">
-                <div class="container">
-                    <h1 class="display-5 fw-bold">
-                        Centro de Gestión
-                    </h1>
-                    <p class="lead fw-bold">
-                        "Garantizamos calidad, organización y rapidez en cada pedido."
-                    </p>
-                </div>
-            </div>
-    <div class="container mt-5">
-
-        <div th:if="${session.usuarioLogueado == null}" class="alert alert-danger text-center p-5 shadow" role="alert">
-            <i class="fa-solid fa-triangle-exclamation fa-4x mb-3 text-danger"></i>
-            <h2 class="fw-bold">Acceso Denegado</h2>
-            <p class="lead">No has iniciado sesión en el sistema de Coqui Café.</p>
-            <a th:href="@{/}" class="btn btn-danger mt-3 fw-bold">Ir al Login</a>
+        <div class="container">
+            <h1 class="display-5 fw-bold">
+                Centro de Gestión
+            </h1>
+            <p class="lead fw-bold">
+                "Garantizamos calidad, organización y rapidez en cada pedido."
+            </p>
         </div>
-<div class="row g-4 mb-5">
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm">
-                        <div class="card-body">
-                            <h3 class="fw-bold text-danger" th:text="${pedidos.size()}">
-                            </h3>
-                            <p class="mb-1">Total Pedidos</p>
-                            <small class="text-muted">
-                                Pedidos registrados
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm">
-                        <div class="card-body">
-                            <h3 class="fw-bold text-warning">
-                                12
-                            </h3>
-                            <p class="mb-1">
-                                Pendientes
-                            </p>
-                            <small class="text-muted">
-                                Aún no iniciados
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm">
-                        <div class="card-body">
-                            <h3 class="fw-bold text-primary">
-                                7
-                            </h3>
-                            <p class="mb-1">
-                                En proceso
-                            </p>
-                            <small class="text-muted">
-                                Preparándose
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card text-center shadow-sm">
-                        <div class="card-body">
-                            <h3 class="fw-bold text-success">
-                                10
-                            </h3>
-                            <p class="mb-1">
-                                Listos
-                            </p>
-                            <small class="text-muted">
-                                Para entrega
-                            </small>
-                        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-danger" th:text="${pedidos.size()}">
+                        </h3>
+                        <p class="mb-1">Total Pedidos</p>
+                        <small class="text-muted">
+                            Pedidos registrados
+                        </small>
                     </div>
                 </div>
             </div>
-        <div th:if="${session.usuarioLogueado != null}">
-            
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-warning">
+                            12
+                        </h3>
+                        <p class="mb-1">
+                            Pendientes
+                        </p>
+                        <small class="text-muted">
+                            Aún no iniciados
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-primary">
+                            7
+                        </h3>
+                        <p class="mb-1">
+                            En proceso
+                        </p>
+                        <small class="text-muted">
+                            Preparándose
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-success">
+                            10
+                        </h3>
+                        <p class="mb-1">
+                            Listos
+                        </p>
+                        <small class="text-muted">
+                            Para entrega
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-0">
                     <div class="table-responsive">

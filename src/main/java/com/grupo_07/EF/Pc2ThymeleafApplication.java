@@ -1,4 +1,4 @@
-package com.grupo_07.pc2_thymeleaf;
+package com.grupo_07.EF;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

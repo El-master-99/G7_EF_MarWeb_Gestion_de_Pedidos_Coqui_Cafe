@@ -1,4 +1,5 @@
-package com.grupo_07.pc2_thymeleaf;
+package com.grupo_07.EF;
+
 public enum Estado {
     PENDIENTE("Pendiente"),
     EN_PROGRESO("En Progreso"),

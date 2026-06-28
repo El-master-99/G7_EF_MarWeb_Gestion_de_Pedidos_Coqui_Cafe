@@ -1,4 +1,4 @@
-package com.grupo_07.pc2_thymeleaf;
+package com.grupo_07.EF;
 
 import java.time.LocalDate;
 import jakarta.persistence.*;

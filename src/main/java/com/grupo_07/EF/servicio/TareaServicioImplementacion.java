@@ -1,11 +1,11 @@
-package com.grupo_07.pc2_thymeleaf.servicio;
+package com.grupo_07.EF.servicio;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo_07.pc2_thymeleaf.Tarea;
-import com.grupo_07.pc2_thymeleaf.repositorio.TareaRepositorio;
+import com.grupo_07.EF.Tarea;
+import com.grupo_07.EF.repositorio.TareaRepositorio;
 
 @Service
 public class TareaServicioImplementacion implements TareaServicio {

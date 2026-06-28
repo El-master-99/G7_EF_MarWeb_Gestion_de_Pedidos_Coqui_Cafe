@@ -1,0 +1,99 @@
+package com.grupo_07.EF;
+
+import java.security.Principal;
+
+import jakarta.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.grupo_07.EF.repositorio.AccesoRepositorio;
+import com.grupo_07.EF.repositorio.UsuarioRepositorio;
+import com.grupo_07.EF.servicio.TareaServicio;
+
+@Controller
+public class thymeleaf {
+
+    private final TareaServicio tareaServicio;
+    private final UsuarioRepositorio usuarioRepositorio;
+    private final AccesoRepositorio accesoRepositorio;
+
+    public thymeleaf(
+            TareaServicio tareaServicio,
+            UsuarioRepositorio usuarioRepositorio,
+            AccesoRepositorio accesoRepositorio) {
+        this.tareaServicio = tareaServicio;
+        this.usuarioRepositorio = usuarioRepositorio;
+        this.accesoRepositorio = accesoRepositorio;
+    }
+
+    @GetMapping({ "/", "/login" })
+    public String mostrarLogin() {
+        return "login";
+    }
+
+    @GetMapping("/index")
+    public String inicio(Model model, Principal principal) {
+        model.addAttribute("pedidos", tareaServicio.listarTodas());
+
+        if (principal != null) {
+            model.addAttribute("usuarioLogueado", principal.getName());
+        }
+
+        return "index";
+    }
+
+    @GetMapping("/produccion")
+    public String produccion(Model model) {
+        model.addAttribute("pedidos", tareaServicio.listarTodas());
+        model.addAttribute("tarea", new Tarea());
+        return "produccion";
+    }
+
+    @GetMapping("/usuario")
+    public String usuario(Model model) {
+        model.addAttribute("usuarios", usuarioRepositorio.findAll());
+        return "usuario";
+    }
+
+    @GetMapping("/tarea/editar/{id}")
+    public String editarTarea(@PathVariable Long id, Model model) {
+        Tarea tarea = tareaServicio.buscarPorId(id);
+        model.addAttribute("tarea", tarea);
+        model.addAttribute("pedidos", tareaServicio.listarTodas());
+        return "produccion";
+    }
+
+    @GetMapping("/tarea/eliminar/{id}")
+    public String eliminarTarea(@PathVariable Long id) {
+        tareaServicio.eliminar(id);
+        return "redirect:/produccion";
+    }
+
+    @PostMapping("/tarea/guardar")
+    public String guardarTarea(@Valid Tarea tarea, BindingResult resultado, Model model) {
+        if (resultado.hasErrors()) {
+            model.addAttribute("pedidos", tareaServicio.listarTodas());
+            return "produccion";
+        }
+
+        tareaServicio.guardar(tarea);
+        return "redirect:/produccion";
+    }
+
+    @GetMapping("/perfil")
+    public String verPerfil(Principal principal, Model model) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        Acceso acceso = accesoRepositorio.findByUsername(principal.getName()).orElse(null);
+        model.addAttribute("usuario", acceso);
+
+        return "perfil";
+    }
+}
