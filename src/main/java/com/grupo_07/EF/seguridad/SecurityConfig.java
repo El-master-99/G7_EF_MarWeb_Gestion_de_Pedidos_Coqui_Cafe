@@ -21,13 +21,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/registro", "/Imagenes/**", "/css/**", "/js/**").permitAll()
 
-                        // Ruta administrativa
+                        // Solo ADMIN
                         .requestMatchers("/usuario", "/usuario/**").hasRole("ADMIN")
+                        .requestMatchers("/tarea/**").hasRole("ADMIN")
 
-                        // Rutas protegidas para usuarios autenticados
-                        .requestMatchers("/index", "/produccion", "/produccion/**", "/tarea/**", "/perfil",
-                                "/perfil/**")
-                        .authenticated()
+                        // Usuarios autenticados
+                        .requestMatchers("/index", "/produccion", "/perfil", "/perfil/**").authenticated()
 
                         .anyRequest().authenticated())
                 .formLogin(login -> login
