@@ -3,7 +3,8 @@ package com.grupo_07.EF;
 public enum Estado {
     PENDIENTE("Pendiente"),
     EN_PROGRESO("En Progreso"),
-    COMPLETADA("Completada");
+    COMPLETADA("Completada"),
+    CANCELADA("Cancelada");
 
     private final String valor;
 

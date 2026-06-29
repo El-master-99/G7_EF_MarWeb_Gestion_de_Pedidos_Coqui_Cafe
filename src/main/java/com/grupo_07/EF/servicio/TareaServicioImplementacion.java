@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.grupo_07.EF.Estado;
 import com.grupo_07.EF.Tarea;
 import com.grupo_07.EF.repositorio.TareaRepositorio;
 
@@ -34,5 +35,26 @@ public class TareaServicioImplementacion implements TareaServicio {
     @Override
     public void eliminar(Long id) {
         repositorio.deleteById(id);
+    }
+
+    @Override
+    public long contarPorEstado(Estado estado) {
+        return repositorio.countByEstado(estado);
+    }
+
+    @Override
+    public Tarea cancelar(Long id) {
+        Tarea tarea = buscarPorId(id);
+
+        if (tarea == null) {
+            return null;
+        }
+
+        if (tarea.getEstado() == Estado.COMPLETADA) {
+            return tarea;
+        }
+
+        tarea.setEstado(Estado.CANCELADA);
+        return repositorio.save(tarea);
     }
 }

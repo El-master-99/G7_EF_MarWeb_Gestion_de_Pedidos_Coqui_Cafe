@@ -62,60 +62,48 @@
     </div>
     <div class="container mt-5">
         <div class="row g-4 mb-5">
-            <div class="col-md-3">
+            <div class="col-md">
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
-                        <h3 class="fw-bold text-danger" th:text="${pedidos.size()}">
-                        </h3>
+                        <h3 class="fw-bold text-danger" th:text="${totalPedidos}">0</h3>
                         <p class="mb-1">Total Pedidos</p>
-                        <small class="text-muted">
-                            Pedidos registrados
-                        </small>
+                        <small class="text-muted">Pedidos registrados</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md">
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
-                        <h3 class="fw-bold text-warning">
-                            12
-                        </h3>
-                        <p class="mb-1">
-                            Pendientes
-                        </p>
-                        <small class="text-muted">
-                            Aún no iniciados
-                        </small>
+                        <h3 class="fw-bold text-warning" th:text="${pendientes}">0</h3>
+                        <p class="mb-1">Pendientes</p>
+                        <small class="text-muted">Aún no iniciados</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md">
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
-                        <h3 class="fw-bold text-primary">
-                            7
-                        </h3>
-                        <p class="mb-1">
-                            En proceso
-                        </p>
-                        <small class="text-muted">
-                            Preparándose
-                        </small>
+                        <h3 class="fw-bold text-primary" th:text="${enProceso}">0</h3>
+                        <p class="mb-1">En proceso</p>
+                        <small class="text-muted">Preparándose</small>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md">
                 <div class="card text-center shadow-sm">
                     <div class="card-body">
-                        <h3 class="fw-bold text-success">
-                            10
-                        </h3>
-                        <p class="mb-1">
-                            Listos
-                        </p>
-                        <small class="text-muted">
-                            Para entrega
-                        </small>
+                        <h3 class="fw-bold text-success" th:text="${completadas}">0</h3>
+                        <p class="mb-1">Completados</p>
+                        <small class="text-muted">Pedidos finalizados</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md">
+                <div class="card text-center shadow-sm">
+                    <div class="card-body">
+                        <h3 class="fw-bold text-secondary" th:text="${canceladas}">0</h3>
+                        <p class="mb-1">Cancelados</p>
+                        <small class="text-muted">Pedidos anulados</small>
                     </div>
                 </div>
             </div>
@@ -149,11 +137,10 @@
                                             Alta
                                         </span>
                                     </td>
-                                    <td class="pe-4 text-center">
-                                        <span th:text="${pedido.estado.valor}"
-                                            th:classappend="${pedido.estado.name() == 'PENDIENTE'} ? 'badge bg-warning text-dark' : 
-                                                             (${pedido.estado.name() == 'EN_PROGRESO'} ? 'badge bg-primary' : 'badge bg-success')">
-                                            Pendiente
+                                    <td>
+                                        <span th:text="${pedido.estado.valor}" th:classappend="${pedido.estado.name() == 'PENDIENTE'} ? 'badge bg-warning text-dark' : 
+                       (${pedido.estado.name() == 'EN_PROGRESO'} ? 'badge bg-primary' : 
+                       (${pedido.estado.name() == 'COMPLETADA'} ? 'badge bg-success' : 'badge bg-secondary'))">
                                         </span>
                                     </td>
                                 </tr>

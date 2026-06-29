@@ -1,9 +1,11 @@
 package com.grupo_07.EF;
 
 import java.time.LocalDate;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -15,20 +17,20 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Validación: Título no vacío (Exigido en la rúbrica)
     @NotBlank(message = "El título es obligatorio")
     private String titulo;
 
     private String descripcion;
 
-    // Validación: Fecha futura (Exigido en la rúbrica)
-    @Future(message = "La fecha de entrega debe ser una fecha futura")
+    @NotNull(message = "La fecha de entrega es obligatoria")
+    @FutureOrPresent(message = "La fecha de entrega debe ser hoy o una fecha futura")
     @Column(name = "fecha_entrega")
     private LocalDate fechaEntrega;
 
+    @NotBlank(message = "La prioridad es obligatoria")
     private String prioridad;
 
-    // Mapeo ORM: Almacena el enumerado como texto legible en SQL Server
+    @NotNull(message = "El estado es obligatorio")
     @Enumerated(EnumType.STRING)
-    private Estado estado;
+    private Estado estado = Estado.PENDIENTE;
 }

@@ -54,6 +54,20 @@
         </div>
     </div>
     <main class="container my-5 flex-grow-1">
+        <div th:if="${param.guardado}" class="alert alert-success text-center fw-bold">
+            Pedido registrado correctamente.
+        </div>
+
+        <div th:if="${param.actualizado}" class="alert alert-primary text-center fw-bold">
+            Pedido actualizado correctamente.
+        </div>
+
+        <div th:if="${param.cancelado}" class="alert alert-warning text-center fw-bold">
+            Pedido cancelado correctamente.
+        </div>
+        <div th:if="${param.bloqueado}" class="alert alert-danger text-center fw-bold">
+            Este pedido ya está completado o cancelado, por lo tanto no puede ser editado.
+        </div>
         <div class="row g-4">
 
             <div class="col-lg-4" th:if="${esAdmin}">
@@ -96,12 +110,14 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Estado</label>
-                                <select th:field="*{estado}" class="form-select">
-                                    <option th:each="est : ${T(com.grupo_07.EF.Estado).values()}" th:value="${est}"
-                                        th:text="${est.valor}"></option>
-                                </select>
+                            <select th:field="*{estado}" class="form-select">
+                                <option value="">Seleccione un estado</option>
+                                <option th:each="est : ${T(com.grupo_07.EF.Estado).values()}" th:value="${est}"
+                                    th:text="${est.valor}">
+                                </option>
+                            </select>
+                            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('estado')}"
+                                th:errors="*{estado}">
                             </div>
 
                             <button type="submit" class="btn btn-dark w-100 shadow-sm">
@@ -140,17 +156,22 @@
                                             th:text="${item.prioridad}"></span>
                                     </td>
                                     <td>
-                                        <span class="badge rounded-pill bg-dark" th:text="${item.estado.valor}"></span>
+                                        <span th:text="${item.estado.valor}" class="badge rounded-pill" th:classappend="${item.estado.name() == 'PENDIENTE'} ? 'bg-warning text-dark' :
+                       (${item.estado.name() == 'EN_PROGRESO'} ? 'bg-primary' :
+                       (${item.estado.name() == 'COMPLETADA'} ? 'bg-success' : 'bg-secondary'))">
+                                        </span>
                                     </td>
                                     <td class="text-center" th:if="${esAdmin}">
-                                        <a th:href="@{/tarea/editar/{id}(id=${item.id})}"
+                                        <a th:if="${item.estado.name() != 'COMPLETADA' and item.estado.name() != 'CANCELADA'}"
+                                            th:href="@{/tarea/editar/{id}(id=${item.id})}"
                                             class="btn btn-sm btn-outline-primary me-1">
                                             <i class="fa-solid fa-pen"></i>
                                         </a>
-                                        <a th:href="@{/tarea/eliminar/{id}(id=${item.id})}"
-                                            class="btn btn-sm btn-outline-danger"
-                                            onclick="return confirm('¿Estás seguro de eliminar esta tarea?')">
-                                            <i class="fa-solid fa-trash"></i>
+                                        <a th:if="${item.estado.name() != 'COMPLETADA' and item.estado.name() != 'CANCELADA'}"
+                                            th:href="@{/tarea/cancelar/{id}(id=${item.id})}"
+                                            class="btn btn-sm btn-outline-danger" title="Cancelar pedido"
+                                            onclick="return confirm('¿Deseas cancelar este pedido? Esta acción conservará el registro como cancelado.')">
+                                            <i class="fa-solid fa-ban"></i>
                                         </a>
                                     </td>
                                 </tr>

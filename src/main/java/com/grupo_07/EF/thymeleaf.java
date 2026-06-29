@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.grupo_07.EF.repositorio.AccesoRepositorio;
 import com.grupo_07.EF.repositorio.UsuarioRepositorio;
 import com.grupo_07.EF.servicio.TareaServicio;
+import com.grupo_07.EF.Estado;
 
 @Controller
 public class thymeleaf {
@@ -40,6 +41,12 @@ public class thymeleaf {
     public String inicio(Model model, Principal principal) {
         model.addAttribute("pedidos", tareaServicio.listarTodas());
 
+        model.addAttribute("totalPedidos", tareaServicio.listarTodas().size());
+        model.addAttribute("pendientes", tareaServicio.contarPorEstado(Estado.PENDIENTE));
+        model.addAttribute("enProceso", tareaServicio.contarPorEstado(Estado.EN_PROGRESO));
+        model.addAttribute("completadas", tareaServicio.contarPorEstado(Estado.COMPLETADA));
+        model.addAttribute("canceladas", tareaServicio.contarPorEstado(Estado.CANCELADA));
+
         if (principal != null) {
             model.addAttribute("usuarioLogueado", principal.getName());
         }
@@ -63,15 +70,24 @@ public class thymeleaf {
     @GetMapping("/tarea/editar/{id}")
     public String editarTarea(@PathVariable Long id, Model model) {
         Tarea tarea = tareaServicio.buscarPorId(id);
+
+        if (tarea == null) {
+            return "redirect:/produccion?noexiste";
+        }
+
+        if (tarea.getEstado() == Estado.COMPLETADA || tarea.getEstado() == Estado.CANCELADA) {
+            return "redirect:/produccion?bloqueado";
+        }
+
         model.addAttribute("tarea", tarea);
         model.addAttribute("pedidos", tareaServicio.listarTodas());
         return "produccion";
     }
 
-    @GetMapping("/tarea/eliminar/{id}")
-    public String eliminarTarea(@PathVariable Long id) {
-        tareaServicio.eliminar(id);
-        return "redirect:/produccion";
+    @GetMapping("/tarea/cancelar/{id}")
+    public String cancelarTarea(@PathVariable Long id) {
+        tareaServicio.cancelar(id);
+        return "redirect:/produccion?cancelado";
     }
 
     @PostMapping("/tarea/guardar")
@@ -81,8 +97,10 @@ public class thymeleaf {
             return "produccion";
         }
 
+        boolean esNuevo = tarea.getId() == null;
         tareaServicio.guardar(tarea);
-        return "redirect:/produccion";
+
+        return esNuevo ? "redirect:/produccion?guardado" : "redirect:/produccion?actualizado";
     }
 
     @GetMapping("/perfil")
