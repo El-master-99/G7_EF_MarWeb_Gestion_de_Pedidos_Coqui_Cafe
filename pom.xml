@@ -10,9 +10,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.grupo_07</groupId>
-	<artifactId>EF</artifactId>
+	<artifactId>coquiC</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>EF</name>
+	<name>coquiCafe</name>
 	<description />
 	<url />
 	<licenses>

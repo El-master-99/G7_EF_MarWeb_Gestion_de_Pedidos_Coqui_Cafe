@@ -1,4 +1,4 @@
-package com.grupo_07.EF.seguridad;
+package com.grupo07.coquicafe.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

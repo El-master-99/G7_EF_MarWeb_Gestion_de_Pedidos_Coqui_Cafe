@@ -1,12 +1,11 @@
-package com.grupo_07.EF.servicio;
+package com.grupo07.coquicafe.service;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.grupo_07.EF.Estado;
-import com.grupo_07.EF.Tarea;
-import com.grupo_07.EF.repositorio.TareaRepositorio;
+import com.grupo07.coquicafe.model.*;
+import com.grupo07.coquicafe.repository.TareaRepositorio;
 
 @Service
 public class TareaServicioImplementacion implements TareaServicio {

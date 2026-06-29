@@ -1,4 +1,4 @@
-package com.grupo_07.EF;
+package com.grupo07.coquicafe;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

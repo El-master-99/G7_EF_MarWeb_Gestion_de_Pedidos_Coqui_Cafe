@@ -112,8 +112,8 @@
 
                             <select th:field="*{estado}" class="form-select">
                                 <option value="">Seleccione un estado</option>
-                                <option th:each="est : ${T(com.grupo_07.EF.Estado).values()}" th:value="${est}"
-                                    th:text="${est.valor}">
+                                <option th:each="est : ${T(com.grupo07.coquicafe.model.Estado).values()}"
+                                    th:value="${est}" th:text="${est.valor}">
                                 </option>
                             </select>
                             <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('estado')}"

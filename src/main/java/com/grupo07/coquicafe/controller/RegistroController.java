@@ -1,4 +1,4 @@
-package com.grupo_07.EF;
+package com.grupo07.coquicafe.controller;
 
 import java.time.LocalDate;
 
@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.grupo_07.EF.repositorio.AccesoRepositorio;
-import com.grupo_07.EF.repositorio.UsuarioRepositorio;
+import com.grupo07.coquicafe.model.*;
+import com.grupo07.coquicafe.repository.AccesoRepositorio;
+import com.grupo07.coquicafe.repository.UsuarioRepositorio;
 
 @Controller
 public class RegistroController {

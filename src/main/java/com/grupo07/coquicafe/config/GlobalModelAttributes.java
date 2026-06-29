@@ -1,4 +1,4 @@
-package com.grupo_07.EF.seguridad;
+package com.grupo07.coquicafe.config;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,9 +1,9 @@
-package com.grupo_07.EF.servicio;
+package com.grupo07.coquicafe.service;
 
 import java.util.List;
 
-import com.grupo_07.EF.Estado;
-import com.grupo_07.EF.Tarea;
+import com.grupo07.coquicafe.model.Tarea;
+import com.grupo07.coquicafe.model.Estado;
 
 public interface TareaServicio {
 

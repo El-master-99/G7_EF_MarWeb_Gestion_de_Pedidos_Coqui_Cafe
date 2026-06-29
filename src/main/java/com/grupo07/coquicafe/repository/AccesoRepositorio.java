@@ -1,10 +1,10 @@
-package com.grupo_07.EF.repositorio;
+package com.grupo07.coquicafe.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.grupo_07.EF.Acceso;
+import com.grupo07.coquicafe.model.Acceso;
 
 public interface AccesoRepositorio extends JpaRepository<Acceso, Long> {
 

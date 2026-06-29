@@ -1,4 +1,4 @@
-package com.grupo_07.EF;
+package com.grupo07.coquicafe.controller;
 
 import java.security.Principal;
 
@@ -11,19 +11,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.grupo_07.EF.repositorio.AccesoRepositorio;
-import com.grupo_07.EF.repositorio.UsuarioRepositorio;
-import com.grupo_07.EF.servicio.TareaServicio;
-import com.grupo_07.EF.Estado;
+import com.grupo07.coquicafe.model.Estado;
+import com.grupo07.coquicafe.model.Tarea;
+import com.grupo07.coquicafe.model.Acceso;
+import com.grupo07.coquicafe.repository.AccesoRepositorio;
+import com.grupo07.coquicafe.repository.UsuarioRepositorio;
+import com.grupo07.coquicafe.service.TareaServicio;
 
 @Controller
-public class thymeleaf {
+public class MainController {
 
     private final TareaServicio tareaServicio;
     private final UsuarioRepositorio usuarioRepositorio;
     private final AccesoRepositorio accesoRepositorio;
 
-    public thymeleaf(
+    public MainController(
             TareaServicio tareaServicio,
             UsuarioRepositorio usuarioRepositorio,
             AccesoRepositorio accesoRepositorio) {

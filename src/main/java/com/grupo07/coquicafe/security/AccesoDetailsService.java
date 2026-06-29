@@ -1,7 +1,4 @@
-package com.grupo_07.EF.seguridad;
-
-import com.grupo_07.EF.Acceso;
-import com.grupo_07.EF.repositorio.AccesoRepositorio;
+package com.grupo07.coquicafe.security;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import org.springframework.stereotype.Service;
+
+import com.grupo07.coquicafe.model.Acceso;
+import com.grupo07.coquicafe.repository.AccesoRepositorio;
 
 @Service
 public class AccesoDetailsService implements UserDetailsService {

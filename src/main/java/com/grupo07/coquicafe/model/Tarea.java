@@ -1,4 +1,4 @@
-package com.grupo_07.EF;
+package com.grupo07.coquicafe.model;
 
 import java.time.LocalDate;
 
