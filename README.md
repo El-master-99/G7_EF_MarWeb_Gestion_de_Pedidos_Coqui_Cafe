@@ -1,47 +1,49 @@
-# Sistema Web de Gestión de Pedidos - Coqui Café
+# ☕ Sistema Web de Gestión de Pedidos - Coqui Café
 
-Aplicación web desarrollada para la gestión de pedidos de la pastelería/cafetería **Coqui Café**.
+## 📖 Descripción
 
-El sistema permite iniciar sesión, registrar pedidos, visualizar información, editar registros y eliminar datos mediante una interfaz web responsiva.
+Sistema web desarrollado para la gestión de pedidos de la pastelería **Coqui Café**.
+
+La aplicación permite administrar los pedidos de los clientes mediante una interfaz web responsiva, facilitando el registro, consulta, edición y eliminación de información. Asimismo, incorpora autenticación de usuarios y persistencia de datos utilizando Spring Boot y SQL Server.
 
 ---
 
-## Tecnologías utilizadas
+# 🛠 Tecnologías utilizadas
 
 - Java
 - Spring Boot
 - Spring Data JPA
 - Spring Security
 - Thymeleaf
-- Bootstrap
+- Bootstrap 5
 - SQL Server
 - Maven
+- Git
 
 ---
 
-## Requisitos previos
+# 📋 Requisitos previos
 
-Antes de ejecutar el proyecto, se debe tener instalado:
+Antes de ejecutar el proyecto es necesario contar con lo siguiente:
 
-- Java JDK
-- Git
+- Java JDK 21 o superior
+- Apache Maven 3.9 o superior (opcional si se usa Maven Wrapper)
 - SQL Server
 - SQL Server Management Studio (SSMS)
-- Visual Studio Code, IntelliJ IDEA o Spring Tool Suite
+- Git
+- Visual Studio Code, IntelliJ IDEA o Spring Tool Suite (STS)
 
 ---
 
-## Despliegue en entorno local
+# 📥 Instalación del proyecto
 
-### 1. Clonar el repositorio
-
-Abrir una terminal y ejecutar:
+## 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/El-master-99/G7_EF_MarWeb_Gestion_de_Pedidos_Coqui_Cafe.git
 ```
 
-Ingresar a la carpeta del proyecto:
+Ingresar al proyecto:
 
 ```bash
 cd G7_EF_MarWeb_Gestion_de_Pedidos_Coqui_Cafe
@@ -49,29 +51,33 @@ cd G7_EF_MarWeb_Gestion_de_Pedidos_Coqui_Cafe
 
 ---
 
-### 2. Crear la base de datos
+# 🗄 Configuración de la Base de Datos
 
-El proyecto trabaja con **SQL Server**.
+El proyecto utiliza **SQL Server**.
 
-Abrir **SQL Server Management Studio (SSMS)** y ejecutar el script SQL ubicado en el proyecto.
+## 1. Abrir SQL Server Management Studio (SSMS)
 
-El script crea la base de datos:
+Conectarse a la instancia local de SQL Server.
 
-```sql
-CREATE DATABASE CoquiCafe;
+## 2. Ejecutar el script SQL
+
+Dentro del proyecto se encuentra el archivo:
+
+```text
+database.sql
 ```
 
-También crea las tablas principales:
+Ejecutar dicho archivo para crear automáticamente:
 
-- `Tarea`
-- `Usuario`
-- `Acceso`
-
-Además, inserta datos de prueba para validar el funcionamiento del sistema.
+- Base de datos **CoquiCafe**
+- Tabla **Tarea**
+- Tabla **Usuario**
+- Tabla **Acceso**
+- Datos iniciales de prueba
 
 ---
 
-### 3. Configurar la conexión a SQL Server
+# ⚙ Configuración del proyecto
 
 Editar el archivo:
 
@@ -79,31 +85,47 @@ Editar el archivo:
 src/main/resources/application.properties
 ```
 
-Configurar la conexión local a SQL Server:
+Configurar los datos de conexión:
 
 ```properties
 spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=CoquiCafe;encrypt=true;trustServerCertificate=true
 spring.datasource.username=TU_USUARIO
-spring.datasource.password=TU_PASSWORD
+spring.datasource.password=TU_CONTRASEÑA
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect
 ```
 
-> Nota: No subir credenciales reales al repositorio.
+> **Importante:** No subir credenciales reales al repositorio.
 
 ---
 
-### 4. Ejecutar la aplicación
+# ▶ Compilar el proyecto
 
-En Windows:
+Si se utiliza Maven:
+
+```bash
+mvn clean install
+```
+
+Si se utiliza Maven Wrapper:
+
+```bash
+.\mvnw.cmd clean install
+```
+
+---
+
+# 🚀 Ejecutar la aplicación
+
+Con Maven Wrapper:
 
 ```bash
 .\mvnw.cmd spring-boot:run
 ```
 
-También puede ejecutarse con Maven instalado:
+O utilizando Maven:
 
 ```bash
 mvn spring-boot:run
@@ -111,144 +133,98 @@ mvn spring-boot:run
 
 ---
 
-### 5. Abrir la aplicación
+# 🌐 Acceso al sistema
 
-Ingresar desde el navegador a:
+Una vez iniciada la aplicación, abrir el navegador e ingresar a:
 
-```text
+```
 http://localhost:8080
 ```
 
 ---
 
-## Usuario de prueba
+# 👤 Usuario de prueba
 
-```text
+Credenciales incluidas en la base de datos:
+
+```
 Usuario: kmarcos
 Contraseña: 123456
 ```
 
 ---
 
-## Funcionalidades principales
+# ✨ Funcionalidades principales
 
 - Inicio de sesión de usuarios.
-- Registro de pedidos.
-- Listado de pedidos.
-- Edición de registros.
-- Eliminación de registros.
-- Gestión de datos con SQL Server.
-- Interfaz responsiva con Bootstrap.
-- Integración con Thymeleaf.
-- Persistencia de datos con Spring Data JPA.
+- Gestión de pedidos.
+- Registro de nuevos pedidos.
+- Edición de pedidos.
+- Eliminación de pedidos.
+- Visualización de información.
+- Persistencia de datos mediante SQL Server.
+- Interfaz responsiva desarrollada con Bootstrap.
 
 ---
 
-## Base de datos
+# 📂 Estructura del proyecto
 
-El sistema utiliza una base de datos llamada:
-
-```text
-CoquiCafe
 ```
-
-Tablas principales:
-
-### Tarea
-
-Almacena los pedidos o tareas de producción.
-
-Campos principales:
-
-- id
-- titulo
-- descripcion
-- fecha_entrega
-- prioridad
-- estado
-
-### Usuario
-
-Almacena la información de los usuarios del sistema.
-
-Campos principales:
-
-- id
-- nombre
-- correo
-- rol
-- fecha_creacion
-- estado
-
-### Acceso
-
-Almacena las credenciales de acceso al sistema.
-
-Campos principales:
-
-- id
-- nombre_usuario
-- contrasena
-- correo
-- usuario_id
-
----
-
-## Seguridad
-
-El proyecto utiliza **Spring Security** para el control de acceso.
-
-La aplicación cuenta con autenticación mediante usuario y contraseña.  
-Solo los usuarios registrados en la base de datos pueden acceder al sistema.
-
----
-
-## Estructura general del proyecto
-
-```text
-src/main/java
- ├── controller
- ├── model / entity
- ├── repository
- ├── service
- └── security
-
-src/main/resources
- ├── templates
- ├── static
- └── application.properties
+src
+│
+├── main
+│   ├── java
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── repository
+│   │   ├── service
+│   │   ├── security
+│   │   └── config
+│   │
+│   └── resources
+│       ├── static
+│       ├── templates
+│       └── application.properties
+│
+└── test
 ```
 
 ---
 
-## Comandos útiles
+# 🔐 Seguridad
 
-Verificar estado de Git:
+La aplicación implementa **Spring Security** para el control de acceso.
 
-```bash
-git status
-```
-
-Ejecutar proyecto:
-
-```bash
-.\mvnw.cmd spring-boot:run
-```
-
-Subir cambios a GitHub:
-
-```bash
-git add .
-git commit -m "Actualizar proyecto"
-git push
-```
+Solo los usuarios registrados pueden acceder a las funcionalidades del sistema mediante autenticación.
 
 ---
 
-## Integrantes
+# ⚠ Problemas comunes
+
+### Error de conexión con SQL Server
+
+Verificar:
+
+- Que SQL Server esté iniciado.
+- Que la base de datos **CoquiCafe** exista.
+- Que el usuario y contraseña configurados en `application.properties` sean correctos.
+
+### Puerto ocupado
+
+Si el puerto **8080** está siendo utilizado por otra aplicación, detener el proceso correspondiente o modificar el puerto en la configuración del proyecto.
+
+---
+
+# 👥 Integrantes
 
 - CASTILLO LLIHUA Luis Daniel
 - JEREMIAS AREVALO Diana Carolina
 - MARCOS VICENTE Kevin Daniel
 - LAGOS MORALES Fernando Valentín
 - CASAS MONTENEGRO Javier
+
+---
+
+# 📄 Licencia
+
+Proyecto desarrollado con fines académicos para el curso **Marcos de Desarrollo Web**.
