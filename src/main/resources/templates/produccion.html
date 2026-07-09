@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +20,9 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" th:href="@{/index}">Inicio</a></li>
                     <li class="nav-item"><a class="nav-link active" th:href="@{/produccion}">Producción / Tareas</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/usuario}">Usuarios</a></li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link" th:href="@{/usuario}">Usuarios</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -51,11 +55,12 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/tarea/guardar}" th:object="${tarea}" method="post" class="needs-validation">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                             <input type="hidden" th:field="*{id}">
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Título</label>
-                                <input type="text" th:field="*{titulo}" class="form-control" th:classappend="${#fields.hasErrors('titulo')} ? 'is-invalid'">
+                                <input type="text" th:field="*{titulo}" class="form-control" required th:classappend="${#fields.hasErrors('titulo')} ? 'is-invalid'">
                                 <div class="invalid-feedback" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
                             </div>
 
@@ -66,8 +71,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Fecha de Entrega</label>
-                                <input type="date" th:field="*{fechaEntrega}" class="form-control" th:classappend="${#fields.hasErrors('fechaEntrega')} ? 'is-invalid'">
-                                <div class="invalid-feedback" th:if="${#fields.hasErrors('fechaEntrega')}" th:errors="*{fechaEntrega}"></div>
+                                <input type="date" th:field="*{fechaEntrega}" class="form-control" required th:classappend="${#fields.hasErrors('fechaEntrega')} ? 'is-invalid'">
+                                <div class="invalid-feedback"  th:if="${#fields.hasErrors('fechaEntrega')}" th:errors="*{fechaEntrega}"></div>
                             </div>
 
                             <div class="mb-3">

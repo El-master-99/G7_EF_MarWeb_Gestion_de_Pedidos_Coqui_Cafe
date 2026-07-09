@@ -1,8 +1,7 @@
 package com.grupo_07.pc2_thymeleaf;
 
-import java.util.Optional;
-
-import jakarta.servlet.http.HttpSession;
+/*import java.util.Optional;
+import jakarta.servlet.http.HttpSession;*/
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +19,9 @@ public class thymeleaf {
 
     private final TareaServicio tareaServicio;
     private final UsuarioRepositorio usuarioRepositorio;
-    private final AccesoRepositorio accesoRepositorio; // Repositorio de persistencia de credenciales
+    private final AccesoRepositorio accesoRepositorio;
 
+    //realizamos el cambio para trabajar con spring security y no con el repositorio de acceso
     public thymeleaf(TareaServicio tareaServicio, UsuarioRepositorio usuarioRepositorio, AccesoRepositorio accesoRepositorio) {
         this.tareaServicio = tareaServicio;
         this.usuarioRepositorio = usuarioRepositorio;
@@ -29,48 +29,37 @@ public class thymeleaf {
     }
 
     @GetMapping("/")
+    public String redireccionInicial() {
+        return "redirect:/login";
+    }
+
+    @GetMapping("/login")
     public String mostrarLogin() {
         return "login";
     }
 
-    @PostMapping("/login")
-    public String procesarLogin(String usuario, String password, HttpSession session, Model model) {
-        Optional<Acceso> usuarioValido = accesoRepositorio.findByUsernameAndPassword(usuario, password);
-
-        if (usuarioValido.isPresent()) {
-            session.setAttribute("usuarioLogueado", usuarioValido.get());
-            return "redirect:/index"; 
-        }
-        
-        model.addAttribute("error", "Datos de autenticación inválidos.");
-        return "login";
-    }
-
     @GetMapping("/index")
-    public String inicio(Model model) {
+    public String inicio(Model model, org.springframework.security.core.Authentication authentication) {
+
+        String username = authentication.getName();
+
+        Acceso acceso = accesoRepositorio.findByUsername(username).orElse(null);
+
         model.addAttribute("pedidos", tareaServicio.listarTodas());
+        model.addAttribute("usuarioLogueado", acceso);
+
         return "index";
     }
 
 @GetMapping("/produccion")
-    public String produccion(HttpSession session, Model model) {
-        // ¡VIDA REAL! Si no hay sesión, rebota directo al login sin mostrar nada
-        if (session.getAttribute("usuarioLogueado") == null) {
-            return "redirect:/";
-        }
-        
+    public String produccion(Model model) {
         model.addAttribute("pedidos", tareaServicio.listarTodas());
         model.addAttribute("tarea", new Tarea());
         return "produccion";
     }
 
     @GetMapping("/usuario")
-    public String usuario(HttpSession session, Model model) {
-        // ¡VIDA REAL! Si no hay sesión, rebota directo al login
-        if (session.getAttribute("usuarioLogueado") == null) {
-            return "redirect:/";
-        }
-        
+    public String usuario(Model model) {
         model.addAttribute("usuarios", usuarioRepositorio.findAll());
         return "usuario";
     }
@@ -100,16 +89,19 @@ public class thymeleaf {
         return "redirect:/produccion";
     }
     @GetMapping("/perfil")
-public String verPerfil(HttpSession session, Model model) {
-    Acceso usuarioLogueado = (Acceso) session.getAttribute("usuarioLogueado");
-    
-    // Si no ha iniciado sesión, lo mandamos al login
-    if (usuarioLogueado == null) {
-        return "redirect:/";
+    public String verPerfil(Model model, org.springframework.security.core.Authentication authentication) {
+
+        String username = authentication.getName();
+
+        Acceso acceso = accesoRepositorio.findByUsername(username).orElse(null);
+
+        model.addAttribute("usuario", acceso);
+
+        return "perfil";
     }
-    
-    // Pasamos el usuario a la vista para mostrar sus datos
-    model.addAttribute("usuario", usuarioLogueado);
-    return "perfil";
-}
+
+    @GetMapping("/403")
+    public String accesoDenegado() {
+        return "error/403";
+    }
 }

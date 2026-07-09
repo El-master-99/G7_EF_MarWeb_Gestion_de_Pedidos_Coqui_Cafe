@@ -1,7 +1,7 @@
 package com.grupo_07.pc2_thymeleaf;
 public enum Estado {
     PENDIENTE("Pendiente"),
-    EN_PROGRESO("En Progreso"),
+    EN_PROGRESO("En Proceso"),
     COMPLETADA("Completada");
 
     private final String valor;

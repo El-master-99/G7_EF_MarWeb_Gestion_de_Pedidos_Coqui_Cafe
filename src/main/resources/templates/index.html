@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -25,19 +27,67 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/produccion}">Producción / Tareas</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link" th:href="@{/usuario}">Usuarios</a>
                     </li>
                 </ul>
 
-                <div class="d-flex align-items-center text-white" th:if="${session.usuarioLogueado != null}">
-                    <span class="me-3 bg-secondary px-3 py-1 rounded-pill fs-7">
-                        <i class="fa-solid fa-circle-user text-warning me-1"></i>
-                        <span th:text="${session.usuarioLogueado.email}">usuario@coquicafe.com</span>
-                    </span>
-                    <a th:href="@{/}" class="btn btn-sm btn-outline-dangerfw-bold">
-                        <i class="fa-solid fa-right-from-bracket"></i> Salir
-                    </a>
+                <div class="d-flex align-items-center text-white"sec:authorize="isAuthenticated()">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle fw-bold"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <i class="fa-solid fa-circle-user text-warning me-1"></i>
+                            <span sec:authentication="name">usuario</span>
+                        </button>
+
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li class="dropdown-header">Datos del usuario</li>
+
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <strong>Usuario:</strong>
+                                    <span sec:authentication="name">usuario</span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <strong>Rol:</strong>
+                                    <span sec:authorize="hasRole('ADMIN')">ADMIN</span>
+                                    <span sec:authorize="hasRole('USER')">USER</span>
+                                </span>
+                            </li>
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <strong>Correo:</strong>
+                                    <span th:text="${usuarioLogueado.email}">correo</span>
+                                </span>
+                            </li>
+
+                            <li>
+                                <span class="dropdown-item-text">
+                                    <strong>Estado:</strong>
+                                    <span th:text="${usuarioLogueado.estado ? 'Activo' : 'Inactivo'}">Activo</span>
+                                </span>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="px-3">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger w-100 fw-bold">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Salir
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    <form th:action="@{/logout}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger fw-bold">
+                            <i class="fa-solid fa-right-from-bracket"></i> Salir
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -58,12 +108,7 @@
             </div>
     <div class="container mt-5">
 
-        <div th:if="${session.usuarioLogueado == null}" class="alert alert-danger text-center p-5 shadow" role="alert">
-            <i class="fa-solid fa-triangle-exclamation fa-4x mb-3 text-danger"></i>
-            <h2 class="fw-bold">Acceso Denegado</h2>
-            <p class="lead">No has iniciado sesión en el sistema de Coqui Café.</p>
-            <a th:href="@{/}" class="btn btn-danger mt-3 fw-bold">Ir al Login</a>
-        </div>
+        
 <div class="row g-4 mb-5">
                 <div class="col-md-3">
                     <div class="card text-center shadow-sm">
@@ -123,7 +168,7 @@
                     </div>
                 </div>
             </div>
-        <div th:if="${session.usuarioLogueado != null}">
+        <div sec:authorize="isAuthenticated()">
             
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body p-0">
