@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Principal - Coqui Café</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="bg-light">
+
+    <!-- NAVBAR (mismo que en produccion.html, sin cambios) -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <img th:src="@{/Imagenes/logo-coqui.png}" alt="Logo Coqui" class="mb-2" style="max-width:70px;">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" th:href="@{/}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/tasks}">Producción</a></li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin/usuarios}">Usuarios</a></li>
+                </ul>
+                <div class="d-flex align-items-center text-white" sec:authorize="isAuthenticated()">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle fw-bold" type="button" data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-circle-user text-warning me-1"></i>
+                            <span sec:authentication="name">usuario</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li class="dropdown-header">Datos del usuario</li>
+                            <li><span class="dropdown-item-text"><strong>Usuario:</strong> <span sec:authentication="name"></span></span></li>
+                            <li><span class="dropdown-item-text"><strong>Rol:</strong> <span sec:authorize="hasRole('ADMIN')">ADMIN</span><span sec:authorize="hasRole('USER')">USER</span></span></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><form th:action="@{/logout}" method="post" class="px-3"><button type="submit" class="btn btn-sm btn-outline-danger w-100 fw-bold"><i class="fa-solid fa-right-from-bracket"></i> Salir</button></form></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1">
+        <!-- BANNER -->
+        <div class="py-5 text-center text-white" th:style="'background-image: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.5)), url(/Imagenes/coqui-realplaza2.jpg); background-size:cover; background-position:center;'">
+            <div class="container">
+                <h1 class="display-5 fw-bold">Centro de Gestión</h1>
+                <p class="lead fw-bold">"Garantizamos calidad, organización y rapidez en cada pedido."</p>
+            </div>
+        </div>
+
+        <div class="container mt-5">
+            <!-- Tarjetas de conteo -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm border-warning">
+                        <div class="card-body"><h3 class="fw-bold text-warning" th:text="${pendientes}">0</h3><p class="mb-1">Pendientes</p><small class="text-muted">Aún no iniciados</small></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm border-primary">
+                        <div class="card-body"><h3 class="fw-bold text-primary" th:text="${enProceso}">0</h3><p class="mb-1">En Proceso</p><small class="text-muted">Preparándose</small></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm border-success">
+                        <div class="card-body"><h3 class="fw-bold text-success" th:text="${completadas}">0</h3><p class="mb-1">Completadas</p><small class="text-muted">Listas para entrega</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de tareas recientes -->
+            <div sec:authorize="isAuthenticated()">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-header bg-warning text-dark fw-bold"><i class="fa-solid fa-list-check me-2"></i> Tareas Recientes</div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped mb-0 align-middle">
+                                <thead class="table-warning text-dark">
+                                    <tr><th class="ps-4">ID</th><th>Título / Pedido</th><th>Descripción</th><th>Fecha Entrega</th><th>Prioridad</th><th class="pe-4 text-center">Estado</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="t : ${pedidos}">
+                                        <td class="ps-4 fw-bold" th:text="${t.id}"></td>
+                                        <td th:text="${t.titulo}" class="fw-semibold"></td>
+                                        <td th:text="${t.descripcion}" class="text-muted"></td>
+                                        <td th:text="${t.fecha_entrega}"></td>
+                                        <td><span th:text="${t.prioridad}" th:classappend="${t.prioridad == 'Alta' ? 'badge bg-danger' : (t.prioridad == 'Media' ? 'badge bg-warning text-dark' : 'badge bg-success')}"></span></td>
+                                        <td class="pe-4 text-center"><span th:text="${t.estado.getValor()}" th:classappend="${t.estado.name() == 'PENDIENTE' ? 'badge bg-warning text-dark' : (t.estado.name() == 'EN_PROGRESO' ? 'badge bg-primary' : 'badge bg-success')}"></span></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(pedidos)}">
+                                        <td colspan="6" class="text-center py-4 text-muted"><i class="fa-solid fa-inbox fa-2x mb-2 d-block"></i>No hay tareas registradas en este momento.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-warning text-dark pt-4 pb-3 mt-5">
+        <!-- mismo footer que en produccion -->
+        <div class="container">
+            <div class="row text-center text-md-start">
+                <div class="col-md-4 mb-3"><h4><i class="fa-solid fa-leaf me-2"></i>Coqui <span style="color: brown;">Café</span></h4><p class="small">Más de cuatro décadas creando sabores que inspiran y momentos que perduran.</p></div>
+                <div class="col-md-4 mb-3"><h5><i class="fa-solid fa-phone me-2"></i>Contáctanos</h5><ul class="list-unstyled small"><li><i class="fa-solid fa-location-dot me-2"></i>C.C. Real Plaza y otros locales</li><li><i class="fa-solid fa-mobile-screen me-2"></i>+51 937 000 000</li></ul></div>
+                <div class="col-md-4 mb-3"><h5><i class="fa-solid fa-calendar-days me-2"></i>Horarios</h5><p class="small"><i class="fa-solid fa-clock me-2"></i>Lun - Dom: 10:00 AM - 10:00 PM</p></div>
+            </div>
+            <hr class="border-light">
+            <div class="text-center small"><p class="mb-1">&copy; 2026 Coqui Café - Huancayo</p><p class="mb-0">Grupo7. Todos los derechos reservados.</p></div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

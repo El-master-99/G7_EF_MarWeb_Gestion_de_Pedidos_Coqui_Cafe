@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tareas - Coqui Café</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .badge {
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+    <!-- NAVBAR igual que antes -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <div class="container-fluid">
+            <img th:src="@{/Imagenes/logo-coqui.png}" alt="Logo Coqui" class="mb-2" style="max-width:70px;">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" th:href="@{/tasks}">Producción</a></li>
+                    <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link"
+        th:href="@{/admin/usuarios}">Usuarios</a></li>
+                </ul>
+                <div class="d-flex align-items-center text-white" sec:authorize="isAuthenticated()">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-sm btn-secondary dropdown-toggle fw-bold" type="button"
+                            data-bs-toggle="dropdown">
+                            <i class="fa-solid fa-circle-user text-warning me-1"></i>
+                            <span sec:authentication="name">usuario</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li class="dropdown-header">Datos del usuario</li>
+                            <li><span class="dropdown-item-text"><strong>Usuario:</strong> <span
+                                        sec:authentication="name"></span></span></li>
+                            <li><span class="dropdown-item-text"><strong>Rol:</strong> <span
+                                        sec:authorize="hasRole('ADMIN')">ADMIN</span><span
+                                        sec:authorize="hasRole('USER')">USER</span></span></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form th:action="@{/logout}" method="post" class="px-3"><button type="submit"
+                                        class="btn btn-sm btn-outline-danger w-100 fw-bold"><i
+                                            class="fa-solid fa-right-from-bracket"></i> Salir</button></form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow-1">
+        <!-- BANNER -->
+        <div class="py-5 text-center text-white"
+            th:style="'background-image: linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.5)), url(/Imagenes/coqui-realplaza2.jpg); background-size:cover; background-position:center;'">
+            <div class="container">
+                <h1 class="display-5 fw-bold">Área de Producción Activa</h1>
+                <p class="lead fw-bold">Revisa pedidos pendientes, en proceso y urgentes del día</p>
+                <p class="fw-semibold">Organiza, prepara y entrega a tiempo</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Mensajes flash -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Lista de Tareas</h3>
+                <!-- Botón Nueva Tarea: abre modal de creación -->
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrear">
+                    <i class="fas fa-plus"></i> Nueva Tarea
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover shadow-sm">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Fecha de Entrega</th>
+                            <th>Prioridad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="t : ${tareas}">
+                            <td th:text="${t.id}"></td>
+                            <td th:text="${t.titulo}"></td>
+                            <td th:text="${t.descripcion}"></td>
+                            <td th:text="${t.fecha_entrega}"></td>
+                            <td>
+                                <span
+                                    th:class="${t.prioridad == 'Alta' ? 'badge bg-danger' : (t.prioridad == 'Media' ? 'badge bg-warning text-dark' : 'badge bg-success')}"
+                                    th:text="${t.prioridad}"></span>
+                            </td>
+                            <td>
+                                <span
+                                    th:class="${t.estado.name() == 'PENDIENTE' ? 'badge bg-secondary' : (t.estado.name() == 'EN_PROGRESO' ? 'badge bg-info' : 'badge bg-success')}"
+                                    th:text="${t.estado.getValor()}"></span>
+                            </td>
+                            <td>
+                                <!-- Botón Editar: abre modal de edición y carga datos con JavaScript -->
+                                <button class="btn btn-warning btn-sm me-1 btn-editar" data-bs-toggle="modal"
+                                    data-bs-target="#modalEditar" th:data-id="${t.id}" th:data-titulo="${t.titulo}"
+                                    th:data-descripcion="${t.descripcion}" th:data-fecha="${t.fecha_entrega}"
+                                    th:data-prioridad="${t.prioridad}" th:data-estado="${t.estado}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+
+                                <!-- Botón Eliminar: abre modal de confirmación -->
+                                <button class="btn btn-danger btn-sm btn-eliminar" data-bs-toggle="modal"
+                                    data-bs-target="#modalEliminar" th:data-id="${t.id}" th:data-titulo="${t.titulo}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- MODAL CREAR -->
+        <div class="modal fade" id="modalCrear" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/tasks/save}" th:object="${tareaNueva}" method="post">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Nueva Tarea</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div th:if="${#fields.hasErrors('titulo')}" class="alert alert-danger"
+                                th:errors="*{titulo}"></div>
+                            <div th:if="${#fields.hasErrors('fecha_entrega')}" class="alert alert-danger"
+                                th:errors="*{fecha_entrega}"></div>
+                            <div class="mb-3">
+                                <label class="form-label">Título</label>
+                                <input type="text" th:field="*{titulo}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea th:field="*{descripcion}" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Fecha de Entrega</label>
+                                <input type="date" th:field="*{fecha_entrega}" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Prioridad</label>
+                                <select th:field="*{prioridad}" class="form-select">
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select th:field="*{estado}" class="form-select">
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="EN_PROGRESO">En Progreso</option>
+                                    <option value="COMPLETADA">Completada</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR -->
+        <div class="modal fade" id="modalEditar" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form th:action="@{/tasks/update}" method="post" id="formEditar">
+                        <input type="hidden" name="id" id="edit-id">
+                        <div class="modal-header bg-warning text-dark">
+                            <h5 class="modal-title">Editar Tarea</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Título</label>
+                                <input type="text" name="titulo" id="edit-titulo" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea name="descripcion" id="edit-descripcion" class="form-control"
+                                    rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Fecha de Entrega</label>
+                                <input type="date" name="fecha_entrega" id="edit-fecha" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Prioridad</label>
+                                <select name="prioridad" id="edit-prioridad" class="form-select">
+                                    <option value="Baja">Baja</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Alta">Alta</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Estado</label>
+                                <select name="estado" id="edit-estado" class="form-select">
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="EN_PROGRESO">En Progreso</option>
+                                    <option value="COMPLETADA">Completada</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-warning">Actualizar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL ELIMINAR -->
+        <div class="modal fade" id="modalEliminar" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de eliminar la tarea: <strong id="delete-titulo"></strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <a href="#" id="delete-link" class="btn btn-danger">Eliminar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-warning text-dark pt-4 pb-3">
+        <!-- mismo footer -->
+        <div class="container">
+            <div class="row text-center text-md-start">
+                <div class="col-md-4 mb-3">
+                    <h4><i class="fa-solid fa-leaf me-2"></i>Coqui <span style="color: brown;">Café</span></h4>
+                    <p class="small">Más de cuatro décadas creando sabores que inspiran y momentos que perduran.</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fa-solid fa-phone me-2"></i>Contáctanos</h5>
+                    <ul class="list-unstyled small">
+                        <li><i class="fa-solid fa-location-dot me-2"></i>C.C. Real Plaza y otros locales</li>
+                        <li><i class="fa-solid fa-mobile-screen me-2"></i>+51 937 000 000</li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h5><i class="fa-solid fa-calendar-days me-2"></i>Horarios</h5>
+                    <p class="small"><i class="fa-solid fa-clock me-2"></i>Lun - Dom: 10:00 AM - 10:00 PM</p>
+                </div>
+            </div>
+            <hr class="border-light">
+            <div class="text-center small">
+                <p class="mb-1">&copy; 2026 Coqui Café - Huancayo</p>
+                <p class="mb-0">Grupo7. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Cargar datos en el modal de edición
+        document.querySelectorAll('.btn-editar').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.dataset.id;
+                const titulo = this.dataset.titulo;
+                const descripcion = this.dataset.descripcion;
+                const fecha = this.dataset.fecha;
+                const prioridad = this.dataset.prioridad;
+                const estado = this.dataset.estado;
+
+                document.getElementById('edit-id').value = id;
+                document.getElementById('edit-titulo').value = titulo;
+                document.getElementById('edit-descripcion').value = descripcion;
+                document.getElementById('edit-fecha').value = fecha;
+                document.getElementById('edit-prioridad').value = prioridad;
+                document.getElementById('edit-estado').value = estado;
+            });
+        });
+
+        // Cargar datos en el modal de eliminación
+        document.querySelectorAll('[data-bs-target="#modalEliminar"]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const id = this.dataset.id;
+                const titulo = this.dataset.titulo;
+                document.getElementById('delete-titulo').textContent = titulo;
+                document.getElementById('delete-link').href = '/tasks/delete/' + id;
+            });
+        });
+
+        // Abrir modal de edición si hay errores (cuando el controlador devuelve la vista con tarea)
+        document.addEventListener('DOMContentLoaded', function () {
+            const tareaEdit = /*[[${tarea}]]*/ null;
+            if (tareaEdit && tareaEdit.id) {
+                // Si hay una tarea en el modelo, abrir el modal de edición y cargar datos
+                const modal = new bootstrap.Modal(document.getElementById('modalEditar'));
+                document.getElementById('edit-id').value = tareaEdit.id;
+                document.getElementById('edit-titulo').value = tareaEdit.titulo;
+                document.getElementById('edit-descripcion').value = tareaEdit.descripcion;
+                document.getElementById('edit-fecha').value = tareaEdit.fecha_entrega;
+                document.getElementById('edit-prioridad').value = tareaEdit.prioridad;
+                document.getElementById('edit-estado').value = tareaEdit.estado;
+                modal.show();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,238 @@
+-- ==========================================
+-- CREAR BASE DE DATOS
+-- ==========================================
+
+CREATE DATABASE CoquiCafe;
+GO
+
+USE CoquiCafe;
+GO
+
+-- ==========================================
+-- TABLA TAREA
+-- ==========================================
+
+CREATE TABLE Tarea (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    titulo VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(500),
+    fecha_entrega DATE NOT NULL,
+    prioridad VARCHAR(20) NOT NULL,
+    estado VARCHAR(20) NOT NULL
+);
+GO
+
+-- ==========================================
+-- TABLA USUARIO
+-- ==========================================
+
+CREATE TABLE Usuario (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    correo VARCHAR(100) NOT NULL UNIQUE,
+    rol VARCHAR(50) NOT NULL,
+    fecha_creacion DATE NOT NULL,
+    estado VARCHAR(20) NOT NULL
+);
+GO
+
+-- ==========================================
+-- TABLA ACCESO
+-- ==========================================
+
+CREATE TABLE Acceso (
+    id BIGINT IDENTITY(1,1) PRIMARY KEY,
+    nombre_usuario VARCHAR(50) NOT NULL UNIQUE,
+    contrasena VARCHAR(255) NOT NULL,
+    correo VARCHAR(100) NOT NULL,
+    usuario_id BIGINT NOT NULL,
+
+    CONSTRAINT FK_Acceso_Usuario
+    FOREIGN KEY (usuario_id)
+    REFERENCES Usuario(id)
+);
+GO
+
+-- ==========================================
+-- DATOS DE PRUEBA PARA TAREA
+-- ==========================================
+
+INSERT INTO Tarea
+(titulo, descripcion, fecha_entrega, prioridad, estado)
+VALUES
+('Torta de Chocolate',
+ 'Cumpleaños (20 personas)',
+ DATEADD(DAY, 10, CAST(GETDATE() AS DATE)),
+ 'Alta',
+ 'Pendiente');
+
+INSERT INTO Tarea
+(titulo, descripcion, fecha_entrega, prioridad, estado)
+VALUES
+('50 Cupcakes',
+ 'Evento corporativo',
+ DATEADD(DAY, 15, CAST(GETDATE() AS DATE)),
+ 'Media',
+ 'En Progreso');
+
+INSERT INTO Tarea
+(titulo, descripcion, fecha_entrega, prioridad, estado)
+VALUES
+('Tarta de Fresa',
+ 'Boda pequeña',
+ DATEADD(DAY, 5, CAST(GETDATE() AS DATE)),
+ 'Baja',
+ 'Completada');
+
+INSERT INTO Tarea
+(titulo, descripcion, fecha_entrega, prioridad, estado)
+VALUES
+('Mini Alfajores Personalizados',
+ 'Fiesta de 15 años',
+ DATEADD(DAY, 20, CAST(GETDATE() AS DATE)),
+ 'Baja',
+ 'Completada');
+
+INSERT INTO Tarea
+(titulo, descripcion, fecha_entrega, prioridad, estado)
+VALUES
+('Birretes de Chocolate',
+ 'Fiesta de Promoción',
+ DATEADD(DAY, 20, CAST(GETDATE() AS DATE)),
+ 'Media',
+ 'Pendiente');
+GO
+
+-- ==========================================
+-- DATOS DE PRUEBA PARA USUARIO
+-- ==========================================
+
+INSERT INTO Usuario
+(nombre, correo, rol, fecha_creacion, estado)
+VALUES
+('CASTILLO LLIHUA Luis',
+ 'luis.castillo@coquicafe.com',
+ 'Gerente General',
+ CAST(GETDATE() AS DATE),
+ 'Activo');
+
+INSERT INTO Usuario
+(nombre, correo, rol, fecha_creacion, estado)
+VALUES
+('JEREMIAS AREVALO Diana',
+ 'diana.jeremias@coquicafe.com',
+ 'Administradora',
+ CAST(GETDATE() AS DATE),
+ 'Activo');
+
+INSERT INTO Usuario
+(nombre, correo, rol, fecha_creacion, estado)
+VALUES
+('MARCOS VICENTE Kevin',
+ 'kevin.marcos@coquicafe.com',
+ 'Contador',
+ CAST(GETDATE() AS DATE),
+ 'Activo');
+
+INSERT INTO Usuario
+(nombre, correo, rol, fecha_creacion, estado)
+VALUES
+('LAGOS MORALES Fernando',
+ 'fernando.lagos@coquicafe.com',
+ 'Supervisor',
+ CAST(GETDATE() AS DATE),
+ 'Activo');
+
+INSERT INTO Usuario
+(nombre, correo, rol, fecha_creacion, estado)
+VALUES
+('CASAS MONTENEGRO Javier',
+ 'javier.casas@coquicafe.com',
+ 'Gerente de Marketing',
+ CAST(GETDATE() AS DATE),
+ 'Activo');
+GO
+
+-- ==========================================
+-- DATOS DE ACCESO AL SISTEMA
+-- ==========================================
+
+INSERT INTO Acceso
+(nombre_usuario, contrasena, correo, usuario_id)
+VALUES
+('lcastillo',
+ '123456',
+ 'luis.castillo@coquicafe.com',
+ 1);
+
+INSERT INTO Acceso
+(nombre_usuario, contrasena, correo, usuario_id)
+VALUES
+('djeremias',
+ '123456',
+ 'diana.jeremias@coquicafe.com',
+ 2);
+
+INSERT INTO Acceso
+(nombre_usuario, contrasena, correo, usuario_id)
+VALUES
+('kmarcos',
+ '123456',
+ 'kevin.marcos@coquicafe.com',
+ 3);
+
+INSERT INTO Acceso
+(nombre_usuario, contrasena, correo, usuario_id)
+VALUES
+('flagos',
+ '123456',
+ 'fernando.lagos@coquicafe.com',
+ 4);
+
+INSERT INTO Acceso
+(nombre_usuario, contrasena, correo, usuario_id)
+VALUES
+('jcasas',
+ '123456',
+ 'javier.casas@coquicafe.com',
+ 5);
+GO
+
+-- ==========================================
+-- CONSULTAS DE VERIFICACIÓN
+-- ==========================================
+
+SELECT * FROM Tarea;
+SELECT * FROM Usuario;
+SELECT * FROM Acceso;
+GO
+
+UPDATE Tarea SET estado = 'PENDIENTE' WHERE estado = 'Pendiente';
+UPDATE Tarea SET estado = 'EN_PROGRESO' WHERE estado = 'En Progreso';
+UPDATE Tarea SET estado = 'COMPLETADA' WHERE estado = 'Completada';
+-- ==========================================
+-- Actualizacion de Roles
+-- ==========================================
+ALTER TABLE Acceso
+ADD rol VARCHAR(20);
+GO
+        UPDATE Acceso
+SET rol = 'ADMIN'
+WHERE nombre_usuario IN ('jcasas','djeremias');
+GO
+UPDATE Acceso
+SET rol = 'USER'
+WHERE nombre_usuario IN ('kmarcos','flagos','lcastillo');
+GO
+ALTER TABLE Acceso
+ADD estado BIT DEFAULT 0;
+GO
+update acceso set contrasena='$2a$10$M026lwgdUVsQDwaWfHLfl..SXIjVU6AxhfcP1BxlY.k3Ui0zuD2IC'
+
+select * from acceso
+select * from Usuario
+
+UPDATE Acceso
+SET estado = 1
+WHERE estado IS NULL;
+GO
