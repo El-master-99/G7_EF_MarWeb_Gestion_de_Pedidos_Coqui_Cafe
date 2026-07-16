@@ -1,101 +1,230 @@
-# Coqui Café - Sistema de Gestión de Pedidos
+# ☕ Sistema Web de Gestión de Pedidos - Coqui Café
 
-Aplicación web para la gestión de pedidos de producción de Coqui Café, desarrollada con Spring Boot, Spring Data JPA, Thymeleaf y Spring Security.
+## 📖 Descripción
 
-## Tecnologías utilizadas
+Sistema web desarrollado para la gestión de pedidos de la pastelería **Coqui Café**.
 
-- **Backend:** Spring Boot 3.3.4 (Java 17)
-- **Frontend:** Thymeleaf + Bootstrap
-- **Persistencia:** Spring Data JPA (Hibernate)
-- **Base de datos:** SQL Server
-- **Seguridad:** Spring Security (autenticación por sesión, roles USER/ADMIN)
-- **Gestor de dependencias:** Maven
+La aplicación permite administrar los pedidos de los clientes mediante una interfaz web responsiva, facilitando el registro, consulta, edición y eliminación de información. Asimismo, incorpora autenticación de usuarios y persistencia de datos utilizando Spring Boot y SQL Server.
 
-## Requisitos previos
+---
 
-- JDK 17 o superior
-- Maven (o usar el wrapper `mvnw` incluido en el proyecto)
-- SQL Server (local o remoto) con una instancia accesible en el puerto `1433`
-- Un cliente para ejecutar scripts SQL (SQL Server Management Studio, Azure Data Studio, etc.)
+# 🛠 Tecnologías utilizadas
+
+- Java
+- Spring Boot
+- Spring Data JPA
+- Spring Security
+- Thymeleaf
+- Bootstrap 5
+- SQL Server
+- Maven
+- Git
+
+---
+
+# 📋 Requisitos previos
+
+Antes de ejecutar el proyecto es necesario contar con lo siguiente:
+
+- Java JDK 21 o superior
+- Apache Maven 3.9 o superior (opcional si se usa Maven Wrapper)
+- SQL Server
+- SQL Server Management Studio (SSMS)
+- Git
+- Visual Studio Code, IntelliJ IDEA o Spring Tool Suite (STS)
+
+---
+
+# 📥 Instalación del proyecto
 
 ## 1. Clonar el repositorio
 
 ```bash
-git clone <aqui poner la url del repo>
-cd <aqui poner el nombre del proyecto>
+git clone https://github.com/El-master-99/G7_EF_MarWeb_Gestion_de_Pedidos_Coqui_Cafe.git
 ```
 
-## 2. Crear la base de datos
+Ingresar al proyecto:
 
-El script de creación de tablas se encuentra en el archivo `base de datos.txt`, en la raíz del proyecto. Ejecútalo en tu instancia de SQL Server (por ejemplo, desde SQL Server Management Studio) para crear la base de datos `CoquiCafe` junto con las tablas `Tarea`, `Usuario` y `Acceso`.
-
-```sql
--- Ejecutar el contenido completo de "base de datos.txt"
--- Esto crea la base de datos CoquiCafe y sus tablas
+```bash
+cd G7_EF_MarWeb_Gestion_de_Pedidos_Coqui_Cafe
 ```
 
-## 3. Configurar la conexión a la base de datos
+---
 
-Las credenciales de conexión se configuran en el archivo:
+# 🗄 Configuración de la Base de Datos
 
+El proyecto utiliza **SQL Server**.
+
+## 1. Abrir SQL Server Management Studio (SSMS)
+
+Conectarse a la instancia local de SQL Server.
+
+## 2. Ejecutar el script SQL
+
+Dentro del proyecto se encuentra el archivo:
+
+```text
+database.sql
 ```
+
+Ejecutar dicho archivo para crear automáticamente:
+
+- Base de datos **CoquiCafe**
+- Tabla **Tarea**
+- Tabla **Usuario**
+- Tabla **Acceso**
+- Datos iniciales de prueba
+
+---
+
+# ⚙ Configuración del proyecto
+
+Editar el archivo:
+
+```text
 src/main/resources/application.properties
 ```
 
-Ajusta los siguientes valores según el entorno local:
+Configurar los datos de conexión:
 
 ```properties
-spring.datasource.url=jdbc:sqlserver://localhost:1433;database=CoquiCafe;encrypt=true;trustServerCertificate=true;
-spring.datasource.username=<tu_usuario>
-spring.datasource.password=<tu_contraseña>
+spring.datasource.url=jdbc:sqlserver://localhost:1433;databaseName=CoquiCafe;encrypt=true;trustServerCertificate=true
+spring.datasource.username=TU_USUARIO
+spring.datasource.password=TU_CONTRASEÑA
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.SQLServerDialect
 ```
 
-> `spring.jpa.hibernate.ddl-auto=update` está configurado para que Hibernate actualice el esquema automáticamente si detecta cambios en las entidades.
+> **Importante:** No subir credenciales reales al repositorio.
 
-## 4. Ejecutar la aplicación
+---
 
-Desde la raíz del proyecto, usando el wrapper de Maven incluido:
+# ▶ Compilar el proyecto
+
+Si se utiliza Maven:
 
 ```bash
-mvnw.cmd spring-boot:run
+mvn clean install
 ```
 
-También puedes compilar y ejecutar el `.jar` generado:
+Si se utiliza Maven Wrapper:
 
 ```bash
-./mvnw clean package
-java -jar target/coquiCafe-0.0.1-SNAPSHOT.jar
+.\mvnw.cmd clean install
 ```
 
-## 5. Acceder a la aplicación
+---
 
-La aplicación corre por defecto en el puerto **9091**:
+# 🚀 Ejecutar la aplicación
+
+Con Maven Wrapper:
+
+```bash
+.\mvnw.cmd spring-boot:run
+```
+
+O utilizando Maven:
+
+```bash
+mvn spring-boot:run
+```
+
+---
+
+# 🌐 Acceso al sistema
+
+Una vez iniciada la aplicación, abrir el navegador e ingresar a:
 
 ```
-http://localhost:9091
+http://localhost:8080
 ```
 
-- `/login` — Iniciar sesión
-- `/registro` — Registrar un nuevo usuario (rol USER por defecto)
-- `/tasks` — Gestión de pedidos (requiere estar autenticado)
-- `/admin/usuarios` — Gestión de usuarios (requiere rol ADMIN)
+---
 
-## 6. Usuarios de prueba
+# 👤 Usuario de prueba
 
-El script `base de datos.txt` incluye datos de prueba (usuarios y pedidos) para verificar el funcionamiento del sistema sin necesidad de registrar cuentas nuevas. Revisa el script para conocer las credenciales de acceso insertadas.
-
-## Estructura del proyecto
+Credenciales incluidas en la base de datos:
 
 ```
-src/main/java/com/grupo07/coquicafe/
-├── config/        # Configuración de seguridad (SecurityConfig, manejo de errores de login)
-├── controller/     # Controladores MVC (tareas, usuarios, registro)
-├── model/          # Entidades JPA (Tarea, Usuario, Acceso, Estado)
-├── repository/      # Repositorios Spring Data JPA
-└── service/        # Lógica de negocio (servicio de tareas, UserDetailsService)
-
-src/main/resources/
-├── templates/       # Vistas Thymeleaf
-├── static/Imagenes/  # Recursos estáticos
-└── application.properties
+Usuario: kmarcos
+Contraseña: 123456
 ```
+
+---
+
+# ✨ Funcionalidades principales
+
+- Inicio de sesión de usuarios.
+- Gestión de pedidos.
+- Registro de nuevos pedidos.
+- Edición de pedidos.
+- Eliminación de pedidos.
+- Visualización de información.
+- Persistencia de datos mediante SQL Server.
+- Interfaz responsiva desarrollada con Bootstrap.
+
+---
+
+# 📂 Estructura del proyecto
+
+```
+src
+│
+├── main
+│   ├── java
+│   │   ├── controller
+│   │   ├── entity
+│   │   ├── repository
+│   │   ├── service
+│   │   ├── security
+│   │   └── config
+│   │
+│   └── resources
+│       ├── static
+│       ├── templates
+│       └── application.properties
+│
+└── test
+```
+
+---
+
+# 🔐 Seguridad
+
+La aplicación implementa **Spring Security** para el control de acceso.
+
+Solo los usuarios registrados pueden acceder a las funcionalidades del sistema mediante autenticación.
+
+---
+
+# ⚠ Problemas comunes
+
+### Error de conexión con SQL Server
+
+Verificar:
+
+- Que SQL Server esté iniciado.
+- Que la base de datos **CoquiCafe** exista.
+- Que el usuario y contraseña configurados en `application.properties` sean correctos.
+
+### Puerto ocupado
+
+Si el puerto **8080** está siendo utilizado por otra aplicación, detener el proceso correspondiente o modificar el puerto en la configuración del proyecto.
+
+---
+
+# 👥 Integrantes
+
+- CASTILLO LLIHUA Luis Daniel
+- JEREMIAS AREVALO Diana Carolina
+- MARCOS VICENTE Kevin Daniel
+- LAGOS MORALES Fernando Valentín
+- CASAS MONTENEGRO Javier
+
+---
+
+# 📄 Licencia
+
+Proyecto desarrollado con fines académicos para el curso **Marcos de Desarrollo Web**.
