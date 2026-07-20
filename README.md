@@ -64,7 +64,8 @@ Conectarse a la instancia local de SQL Server.
 Dentro del proyecto se encuentra el archivo:
 
 ```text
-database.sql
+base de datos.txt
+
 ```
 
 Ejecutar dicho archivo para crear automáticamente:
